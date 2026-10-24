@@ -426,7 +426,7 @@ function acquire() {
     const count = Math.min(avail, n + (roll ? 0 : extra));
     // Right edge of the screen = newest sample
     makeFrames(head - count, count, head - post, false);
-    setTrigStatus(roll ? 'ROLL' : 'LIBRE', 'warn');
+    setTrigStatus(roll ? 'ROLL' : 'FREE', 'warn');
     return;
   }
 
@@ -445,17 +445,17 @@ function acquire() {
     const start = Math.max(head - avail, Math.floor(trig) - pre - extra);
     const end = Math.min(head, Math.ceil(trig) + post + extra);
     makeFrames(start, end - start, trig, true);
-    setTrigStatus(`DISPARADO CH${cfg.trigSrc + 1}`, 'ok');
+    setTrigStatus(`TRIGGERED CH${cfg.trigSrc + 1}`, 'ok');
     if (single) {
       single = false;
       setRunning(false);
-      setTrigStatus('SINGLE: capturado', 'ok');
+      setTrigStatus('SINGLE: captured', 'ok');
     }
     return;
   }
 
   if (single) {
-    setTrigStatus('SINGLE: esperando…', 'warn');
+    setTrigStatus('SINGLE: waiting…', 'warn');
     return;
   }
 
@@ -464,9 +464,9 @@ function acquire() {
   if (cfg.trigMode === 'auto' && now - lastTrigTime > autoTimeout) {
     const count = Math.min(avail, n);
     makeFrames(head - count, count, head - post, false);
-    setTrigStatus('AUTO (sin disparo)', 'warn');
+    setTrigStatus('AUTO (untriggered)', 'warn');
   } else if (cfg.trigMode === 'normal') {
-    setTrigStatus('ESPERANDO DISPARO', 'bad');
+    setTrigStatus('WAITING FOR TRIGGER', 'bad');
   }
 }
 
@@ -918,9 +918,9 @@ function drawMarkers() {
   }
   labels.push({ t: `${fmtDiv(cfg.tdiv, 's')}/div`, c: '#e4e6e8' });
   for (const c of active()) {
-    if (chans[c].frame && chans[c].frame.clipped) labels.push({ t: `⚠ CH${c + 1} fuera de rango`, c: '#ef4444' });
+    if (chans[c].frame && chans[c].frame.clipped) labels.push({ t: `⚠ CH${c + 1} out of ADC range`, c: '#ef4444' });
   }
-  if (!calibrated && !DEMO) labels.push({ t: 'sin calibración ADC', c: '#9aa1a9' });
+  if (!calibrated && !DEMO) labels.push({ t: 'ADC not calibrated', c: '#9aa1a9' });
   let lx = r.x + 6;
   for (const l of labels) {
     const w = ctx.measureText(l.t).width + 10;
@@ -996,7 +996,7 @@ function drawFft() {
   }
   ctx.stroke();
   ctx.fillStyle = color;
-  const label = `FFT CH${cfg.sel + 1} 0–${fmtF(fmax)}  ·  pico ${fmtF(lastFft.freq)} (${lastFft.peakDb.toFixed(1)} dBV)  ·  res ${fmtF(df)}`;
+  const label = `FFT CH${cfg.sel + 1} 0–${fmtF(fmax)}  ·  peak ${fmtF(lastFft.freq)} (${lastFft.peakDb.toFixed(1)} dBV)  ·  res ${fmtF(df)}`;
   ctx.fillText(label, r.x + 70, y0 + 13);
   ctx.restore();
 }
@@ -1051,7 +1051,7 @@ function animationLoop() {
     renderMeasurements();
   }
   if (now - lastDataTime > 1500 && !DEMO) {
-    setConn(ws && ws.readyState === WebSocket.OPEN ? 'Sin datos…' : 'Desconectado', 'bad');
+    setConn(ws && ws.readyState === WebSocket.OPEN ? 'No data…' : 'Disconnected', 'bad');
   }
 
   draw();
@@ -1067,31 +1067,31 @@ function animationLoop() {
 
 /** @type {Array<[string, (m: any, c: number) => string]>} */
 const MEAS_LIST = [
-  ['Frecuencia', (m) => m.tooFast ? 'baja t/div' : fmtF(m.freq)],
-  ['Periodo', (m) => fmtT(m.period)],
-  ['V pico‑pico', (m) => fmtV(m.pp)],
-  ['V máx', (m) => fmtV(m.max)],
-  ['V mín', (m) => fmtV(m.min)],
-  ['V amplitud', (m) => fmtV(m.amp)],
-  ['V alto (top)', (m) => fmtV(m.top)],
-  ['V bajo (base)', (m) => fmtV(m.base)],
-  ['V medio', (m) => fmtV(m.cmean ?? m.mean)],
+  ['Frequency', (m) => m.tooFast ? 'slow t/div' : fmtF(m.freq)],
+  ['Period', (m) => fmtT(m.period)],
+  ['V peak‑peak', (m) => fmtV(m.pp)],
+  ['V max', (m) => fmtV(m.max)],
+  ['V min', (m) => fmtV(m.min)],
+  ['V amplitude', (m) => fmtV(m.amp)],
+  ['V top', (m) => fmtV(m.top)],
+  ['V base', (m) => fmtV(m.base)],
+  ['V mean', (m) => fmtV(m.cmean ?? m.mean)],
   ['V RMS', (m) => fmtV(m.crms ?? m.rms)],
   ['V RMS (AC)', (m) => fmtV(m.acrms)],
-  ['Ciclo útil', (m) => isFinite(m.duty) ? m.duty.toFixed(1) + ' %' : '---'],
-  ['Ancho +', (m) => fmtT(m.pwidth)],
-  ['Ancho −', (m) => fmtT(m.nwidth)],
-  ['T subida', (m) => fmtT(m.rise)],
-  ['T bajada', (m) => fmtT(m.fall)],
-  ['Sobreimpulso', (m) => isFinite(m.over) && m.freq ? m.over.toFixed(1) + ' %' : '---']
+  ['Duty cycle', (m) => isFinite(m.duty) ? m.duty.toFixed(1) + ' %' : '---'],
+  ['+ Width', (m) => fmtT(m.pwidth)],
+  ['− Width', (m) => fmtT(m.nwidth)],
+  ['Rise time', (m) => fmtT(m.rise)],
+  ['Fall time', (m) => fmtT(m.fall)],
+  ['Overshoot', (m) => isFinite(m.over) && m.freq ? m.over.toFixed(1) + ' %' : '---']
 ];
 
 function buildMeasurements() {
   const cells = MEAS_LIST.map(([k], i) =>
     `<div class="m"><div class="k">${k}</div><div class="v" id="m${i}a">---</div><div class="v v2" id="m${i}b">---</div></div>`);
-  cells.push('<div class="m dual"><div class="k">Desfase CH1→CH2</div><div class="v vp" id="mPhase">---</div></div>');
-  cells.push('<div class="m dual"><div class="k">Retardo CH1→CH2</div><div class="v vp" id="mDelay">---</div></div>');
-  cells.push('<div class="m"><div class="k">Frec. FFT</div><div class="v" id="mFft">---</div></div>');
+  cells.push('<div class="m dual"><div class="k">Phase CH1→CH2</div><div class="v vp" id="mPhase">---</div></div>');
+  cells.push('<div class="m dual"><div class="k">Delay CH1→CH2</div><div class="v vp" id="mDelay">---</div></div>');
+  cells.push('<div class="m"><div class="k">FFT freq.</div><div class="v" id="mFft">---</div></div>');
   measEl.innerHTML = cells.join('');
 }
 
@@ -1147,7 +1147,7 @@ function setRunning(/** @type {boolean} */ on) {
   const b = $('runBtn');
   b.textContent = on ? 'RUN' : 'STOP';
   b.className = on ? 'run' : 'stop';
-  if (!on && !single) setTrigStatus('DETENIDO', 'bad');
+  if (!on && !single) setTrigStatus('STOPPED', 'bad');
 }
 
 /** Vertical settings of the channel the controls apply to */
@@ -1187,7 +1187,7 @@ function syncUi() {
   $('testHz').value = String(cfg.testHz);
   $('avg').value = String(cfg.avg);
   $('dots').checked = cfg.dots;
-  $('fftBtn').textContent = cfg.fft ? 'Encendido' : 'Apagado';
+  $('fftBtn').textContent = cfg.fft ? 'On' : 'Off';
   $('fftBtn').className = 'small' + (cfg.fft ? ' on' : '');
   $('timeCalVal').textContent = cfg.timeCal.toFixed(4);
   /** @type {Array<[string, string]>} */
@@ -1198,8 +1198,8 @@ function syncUi() {
   }
   for (const id of ['chSelRow', 'trigSrcRow']) $(id).style.display = cfg.channels === 2 ? '' : 'none';
   $('rateHint').innerHTML = cfg.channels === 2
-    ? 'Con <b>2 canales</b> cada uno muestrea hasta <b>41 666 muestras/s</b>: forma clara hasta ~<b>2 kHz</b>, frecuencia hasta ~20 kHz.'
-    : 'Con <b>1 canal</b> se muestrea hasta <b>83 333 muestras/s</b>: forma clara hasta ~<b>4 kHz</b>, frecuencia hasta ~40 kHz.';
+    ? 'With <b>2 channels</b> each one samples up to <b>41 666 S/s</b>: clean waveform up to ~<b>2 kHz</b>, frequency up to ~20 kHz.'
+    : 'With <b>1 channel</b> it samples up to <b>83 333 S/s</b>: clean waveform up to ~<b>4 kHz</b>, frequency up to ~40 kHz.';
   $('rateStatus').textContent = `Fs ${fmtF(effRate()).replace('Hz', 'S/s')}${cfg.channels === 2 ? ' ×2' : ''}`;
   saveSettings();
 }
@@ -1225,7 +1225,7 @@ $('singleBtn').onclick = () => {
   single = true;
   singleArmHead = Math.min(...active().map(c => chans[c].head));
   setRunning(true);
-  setTrigStatus('SINGLE: esperando…', 'warn');
+  setTrigStatus('SINGLE: waiting…', 'warn');
 };
 $('autoBtn').onclick = () => autoset();
 $('vdivUp').onclick = () => stepVdiv(1);
@@ -1321,7 +1321,7 @@ $('timeCalBtn').onclick = async () => {
   // Measure the test signal (exact LEDC frequency) to learn the real sample rate
   const btn = $('timeCalBtn');
   btn.disabled = true;
-  btn.textContent = 'Midiendo…';
+  btn.textContent = 'Measuring…';
   const oldCal = cfg.timeCal;
   cfg.timeCal = 1;
   await sleep(1200);
@@ -1329,13 +1329,13 @@ $('timeCalBtn').onclick = async () => {
   const expected = cfg.testHz;
   if (f && f.freq > 0 && Math.abs(f.freq / expected - 1) < 0.1) {
     cfg.timeCal = expected / f.freq;
-    alert(`Calibrado: factor ${cfg.timeCal.toFixed(4)} (medido ${fmtF(f.freq)}, esperado ${fmtF(expected)})`);
+    alert(`Calibrated: factor ${cfg.timeCal.toFixed(4)} (measured ${fmtF(f.freq)}, expected ${fmtF(expected)})`);
   } else {
     cfg.timeCal = oldCal;
-    alert(`No se detectó la señal de prueba en CH${cfg.sel + 1}. Une el pin de la señal de prueba con esa entrada y vuelve a intentarlo.`);
+    alert(`Test signal not detected on CH${cfg.sel + 1}. Connect the test signal pin to that input and try again.`);
   }
   btn.disabled = false;
-  btn.textContent = 'Calibrar con señal de prueba';
+  btn.textContent = 'Calibrate with test signal';
   syncUi();
 };
 $('timeCalReset').onclick = () => { cfg.timeCal = 1; syncUi(); };
@@ -1345,7 +1345,7 @@ $('resetBtn').onclick = () => {
   window.location.reload();
 };
 $('powerOff').onclick = () => {
-  if (confirm('¿Apagar el esp-scope? Tendrás que pulsar RESET para encenderlo.')) window.location.href = '/poweroff';
+  if (confirm('Power off the esp-scope? You will need to press RESET to start it again.')) window.location.href = '/poweroff';
 };
 
 // Keyboard shortcuts
@@ -1449,7 +1449,7 @@ async function autoset() {
   if (autosetBusy) return;
   autosetBusy = true;
   const btn = $('autoBtn');
-  btn.textContent = 'AJUSTANDO…';
+  btn.textContent = 'SETTING UP…';
   single = false;
   setRunning(true);
   setTrigStatus('AUTOSET…', 'warn');
@@ -1546,7 +1546,7 @@ async function setRateNow(rate) {
       if (!res.ok) throw new Error(res.statusText);
       await fetchInfo();
     } catch (err) {
-      setConn('Error al configurar', 'bad');
+      setConn('Configuration error', 'bad');
       return;
     }
   } else {
@@ -1578,8 +1578,8 @@ async function fetchInfo() {
     RATE_MAX = info.rate_max || RATE_MAX;
     buildLut(info.mv);
     const ch2 = info.adc_gpio2 >= 0 ? ` · CH2: <b>GPIO${info.adc_gpio2}</b>` : '';
-    $('pinInfo').innerHTML = `CH1: <b>GPIO${info.adc_gpio}</b>${ch2} · Señal de prueba: <b>GPIO${info.test_gpio}</b> · GND común`;
-    $('devInfo').textContent = `Chip ${info.target} · ADC ${info.calibrated ? 'calibrado (eFuse)' : 'sin calibrar'} · Fs máx ${info.rate_max} (total)`;
+    $('pinInfo').innerHTML = `CH1: <b>GPIO${info.adc_gpio}</b>${ch2} · Test signal: <b>GPIO${info.test_gpio}</b> · common GND`;
+    $('devInfo').textContent = `Chip ${info.target} · ADC ${info.calibrated ? 'calibrated (eFuse)' : 'not calibrated'} · max Fs ${info.rate_max} (total)`;
   } catch (e) {
     // Older firmware without /info
     buildLut(undefined);
@@ -1592,18 +1592,18 @@ function connect() {
   ws = new WebSocket(`${protocol}//${window.location.host}/signal`);
   ws.binaryType = 'arraybuffer';
   ws.onopen = () => {
-    setConn('Conectado', 'ok');
+    setConn('Connected', 'ok');
     ws && ws.send('hello');
     setRateNow(desiredRate());
   };
   ws.onclose = () => {
-    setConn('Desconectado, reintentando…', 'bad');
+    setConn('Disconnected, retrying…', 'bad');
     reconnectTimeout = window.setTimeout(connect, 2000);
   };
   ws.onmessage = (event) => {
     const arr = new Uint16Array(event.data);
     if (arr.length) {
-      if (performance.now() - lastDataTime > 1500) setConn('Conectado', 'ok');
+      if (performance.now() - lastDataTime > 1500) setConn('Connected', 'ok');
       processData(arr);
     }
   };
@@ -1634,10 +1634,10 @@ function setupWifiListeners() {
     const ssid = $('wifiSsid').value;
     const pass = $('wifiPass').value;
     if (!ssid) {
-      alert('El SSID es obligatorio');
+      alert('SSID is required');
       return;
     }
-    $('saveWifi').innerText = 'Guardando…';
+    $('saveWifi').innerText = 'Saving…';
     fetch('/api/save_wifi', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1650,7 +1650,7 @@ function setupWifiListeners() {
       })
       .catch(err => {
         alert('Error: ' + err);
-        $('saveWifi').innerText = 'Guardar';
+        $('saveWifi').innerText = 'Save';
       });
   };
 }
@@ -1676,7 +1676,7 @@ function demoValue(/** @type {number} */ c, /** @type {number} */ phase, /** @ty
 }
 
 function startDemo() {
-  setConn('DEMO (simulado)', 'warn');
+  setConn('DEMO (simulated)', 'warn');
   fetchInfoDemo();
   let last = performance.now();
   setInterval(() => {
@@ -1703,8 +1703,8 @@ function startDemo() {
 
 function fetchInfoDemo() {
   buildLut(undefined);
-  $('pinInfo').innerHTML = 'Modo DEMO: señal simulada. En el ESP32‑S3: CH1 <b>GPIO1</b>, CH2 <b>GPIO2</b>, prueba <b>GPIO21</b>.';
-  $('devInfo').textContent = 'Modo demostración (sin hardware)';
+  $('pinInfo').innerHTML = 'DEMO mode: simulated signal. On the ESP32‑S3: CH1 <b>GPIO1</b>, CH2 <b>GPIO2</b>, test <b>GPIO21</b>.';
+  $('devInfo').textContent = 'Demo mode (no hardware)';
 }
 
 /*

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -283,13 +283,13 @@
         <!-- Top bar -->
         <div class="topbar">
             <div class="brand">esp<span>Scope</span></div>
-            <button id="runBtn" class="run" title="Ejecutar / Detener (Espacio)">RUN</button>
-            <button id="singleBtn" title="Captura única (S)">SINGLE</button>
-            <button id="autoBtn" class="primary" title="Ajuste automático (A)">AUTO SET</button>
+            <button id="runBtn" class="run" title="Run / Stop (Space)">RUN</button>
+            <button id="singleBtn" title="Single capture (S)">SINGLE</button>
+            <button id="autoBtn" class="primary" title="Automatic setup (A)">AUTO SET</button>
             <span id="trigStatus" class="pill">--</span>
             <span class="spacer"></span>
             <span id="rateStatus" class="pill">Fs --</span>
-            <span id="connStatus" class="pill bad">Conectando…</span>
+            <span id="connStatus" class="pill bad">Connecting…</span>
         </div>
 
         <!-- Screen -->
@@ -307,14 +307,14 @@
                 <summary>Vertical <span class="sv" id="sumV"></span></summary>
                 <div class="body">
                     <div class="row">
-                        <label>Canales</label>
+                        <label>Channels</label>
                         <div class="seg" id="channelsSel">
-                            <button data-v="1">1 canal</button>
-                            <button data-v="2">2 canales</button>
+                            <button data-v="1">1 channel</button>
+                            <button data-v="2">2 channels</button>
                         </div>
                     </div>
                     <div class="row" id="chSelRow">
-                        <label>Ajustar</label>
+                        <label>Adjust</label>
                         <div class="seg chsel" id="chSel">
                             <button data-v="0" class="c1">CH1</button>
                             <button data-v="1" class="c2">CH2</button>
@@ -323,46 +323,46 @@
                     <div class="row">
                         <label>Volts/div</label>
                         <div class="stepper">
-                            <button class="small" id="vdivDown" title="Más sensibilidad">−</button>
+                            <button class="small" id="vdivDown" title="More sensitivity">−</button>
                             <span class="val" id="vdivVal"></span>
-                            <button class="small" id="vdivUp" title="Menos sensibilidad">+</button>
+                            <button class="small" id="vdivUp" title="Less sensitivity">+</button>
                         </div>
                     </div>
                     <div class="row">
-                        <label>Posición</label>
+                        <label>Position</label>
                         <div class="stepper">
-                            <button class="small" id="vposDown" title="Bajar señal">▼</button>
+                            <button class="small" id="vposDown" title="Move trace down">▼</button>
                             <span class="val" id="vposVal"></span>
-                            <button class="small" id="vposUp" title="Subir señal">▲</button>
+                            <button class="small" id="vposUp" title="Move trace up">▲</button>
                         </div>
                     </div>
                     <div class="row">
                         <label></label>
-                        <button class="small" id="vposZero">Centrar 0 V</button>
-                        <button class="small" id="vposMid">Centrar señal</button>
+                        <button class="small" id="vposZero">Center 0 V</button>
+                        <button class="small" id="vposMid">Center signal</button>
                     </div>
                     <div class="row">
-                        <label>Acoplamiento</label>
+                        <label>Coupling</label>
                         <div class="seg" id="coupling">
                             <button data-v="dc">DC</button>
                             <button data-v="ac">AC</button>
                         </div>
                     </div>
                     <div class="row">
-                        <label>Sonda / divisor</label>
+                        <label>Probe / divider</label>
                         <div class="stepper">
                             <select id="probe">
                                 <option value="1">x1</option>
                                 <option value="2">x2</option>
                                 <option value="5">x5</option>
                                 <option value="10">x10</option>
-                                <option value="custom">otro…</option>
+                                <option value="custom">other…</option>
                             </select>
                             <input type="number" id="probeCustom" step="0.01" min="0.01" style="width:70px; display:none">
                         </div>
                     </div>
                     <div class="row">
-                        <label>Rango ADC</label>
+                        <label>ADC range</label>
                         <select id="atten">
                             <option value="0">0–0.95 V (0 dB)</option>
                             <option value="1">0–1.25 V (2.5 dB)</option>
@@ -377,15 +377,15 @@
                 <summary>Horizontal <span class="sv" id="sumH"></span></summary>
                 <div class="body">
                     <div class="row">
-                        <label>Tiempo/div</label>
+                        <label>Time/div</label>
                         <div class="stepper">
-                            <button class="small" id="tdivDown" title="Más rápido">−</button>
+                            <button class="small" id="tdivDown" title="Faster">−</button>
                             <span class="val" id="tdivVal"></span>
-                            <button class="small" id="tdivUp" title="Más lento">+</button>
+                            <button class="small" id="tdivUp" title="Slower">+</button>
                         </div>
                     </div>
                     <div class="row">
-                        <label>Posición disparo</label>
+                        <label>Trigger position</label>
                         <div class="stepper">
                             <button class="small" id="hposLeft">◀</button>
                             <span class="val" id="hposVal"></span>
@@ -393,7 +393,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <label>Muestreo</label>
+                        <label>Sampling</label>
                         <div class="stepper">
                             <select id="rateMode">
                                 <option value="auto">Auto</option>
@@ -407,53 +407,53 @@
             </details>
 
             <details open>
-                <summary>Disparo (trigger) <span class="sv" id="sumT"></span></summary>
+                <summary>Trigger <span class="sv" id="sumT"></span></summary>
                 <div class="body">
                     <div class="row">
-                        <label>Modo</label>
+                        <label>Mode</label>
                         <div class="seg" id="trigMode">
                             <button data-v="auto">Auto</button>
                             <button data-v="normal">Normal</button>
-                            <button data-v="none">Libre</button>
+                            <button data-v="none">Free</button>
                         </div>
                     </div>
                     <div class="row" id="trigSrcRow">
-                        <label>Fuente</label>
+                        <label>Source</label>
                         <div class="seg chsel" id="trigSrc">
                             <button data-v="0" class="c1">CH1</button>
                             <button data-v="1" class="c2">CH2</button>
                         </div>
                     </div>
                     <div class="row">
-                        <label>Flanco</label>
+                        <label>Edge</label>
                         <div class="seg" id="trigEdge">
-                            <button data-v="rise">↑ Subida</button>
-                            <button data-v="fall">↓ Bajada</button>
+                            <button data-v="rise">↑ Rising</button>
+                            <button data-v="fall">↓ Falling</button>
                         </div>
                     </div>
                     <div class="row">
-                        <label>Nivel</label>
+                        <label>Level</label>
                         <div class="stepper">
                             <input type="number" id="trigLevel" step="0.01">
                             <span class="hint">V</span>
-                            <button class="small" id="trig50" title="Nivel al 50 % de la señal">50%</button>
+                            <button class="small" id="trig50" title="Level at 50 % of the signal">50%</button>
                         </div>
                     </div>
-                    <div class="hint">Arrastra la flecha naranja de la derecha para mover el nivel.</div>
+                    <div class="hint">Drag the orange arrow on the right to move the level.</div>
                 </div>
             </details>
 
             <details>
-                <summary>Pantalla y análisis</summary>
+                <summary>Display &amp; analysis</summary>
                 <div class="body">
                     <div class="row">
-                        <label>FFT (espectro)</label>
-                        <button class="small" id="fftBtn">Apagado</button>
+                        <label>FFT (spectrum)</label>
+                        <button class="small" id="fftBtn">Off</button>
                     </div>
                     <div class="row">
-                        <label>Promedio</label>
+                        <label>Averaging</label>
                         <select id="avg">
-                            <option value="1">No</option>
+                            <option value="1">Off</option>
                             <option value="2">2</option>
                             <option value="4">4</option>
                             <option value="8">8</option>
@@ -461,45 +461,45 @@
                         </select>
                     </div>
                     <div class="row">
-                        <label>Puntos de muestra</label>
+                        <label>Sample dots</label>
                         <input type="checkbox" id="dots">
                     </div>
                     <div class="hint">
-                        <b>Rueda</b>: tiempo/div · <b>Mayús+rueda</b>: volts/div<br>
-                        <b>Arrastrar</b> vertical: posición · horizontal: punto de disparo<br>
-                        <b>Clic</b>: fija un cursor de referencia (ΔT, ΔV, 1/ΔT) · otro clic lo quita<br>
-                        <b>Arrastrar</b> el marcador 1/2 de la izquierda: mueve ese canal<br>
-                        Teclas: <b>Espacio</b> run/stop · <b>A</b> autoset · <b>S</b> single · <b>1</b>/<b>2</b> canal a ajustar
+                        <b>Wheel</b>: time/div · <b>Shift+wheel</b>: volts/div<br>
+                        <b>Drag</b> vertically: position · horizontally: trigger point<br>
+                        <b>Click</b>: set a reference cursor (ΔT, ΔV, 1/ΔT) · click again to clear<br>
+                        <b>Drag</b> the 1/2 marker on the left: moves that channel<br>
+                        Keys: <b>Space</b> run/stop · <b>A</b> autoset · <b>S</b> single · <b>1</b>/<b>2</b> channel to adjust
                     </div>
                 </div>
             </details>
 
             <details>
-                <summary>Señal de prueba y calibración</summary>
+                <summary>Test signal &amp; calibration</summary>
                 <div class="body">
                     <div class="row">
-                        <label>Señal prueba (Hz)</label>
+                        <label>Test signal (Hz)</label>
                         <input type="number" id="testHz" value="1000" min="1" max="40000">
                     </div>
-                    <div class="hint" id="pinInfo">Entrada: GPIO1 · Señal de prueba: GPIO21</div>
+                    <div class="hint" id="pinInfo">CH1: GPIO1 · CH2: GPIO2 · Test signal: GPIO21</div>
                     <div class="row">
-                        <label>Corrección de tiempo</label>
+                        <label>Time correction</label>
                         <span class="val" id="timeCalVal">1.0000</span>
                     </div>
                     <div class="row">
-                        <button class="small" id="timeCalBtn" title="Conecta la señal de prueba a la entrada y pulsa">Calibrar con señal de prueba</button>
-                        <button class="small" id="timeCalReset">Quitar</button>
+                        <button class="small" id="timeCalBtn" title="Connect the test signal to the input and press">Calibrate with test signal</button>
+                        <button class="small" id="timeCalReset">Clear</button>
                     </div>
                 </div>
             </details>
 
             <details>
-                <summary>Sistema</summary>
+                <summary>System</summary>
                 <div class="body">
                     <div class="row">
                         <button id="wifiBtn">Wi‑Fi</button>
-                        <button id="resetBtn" title="Volver a la configuración por defecto">Restablecer</button>
-                        <button id="powerOff" title="Apagar el esp-scope">Apagar</button>
+                        <button id="resetBtn" title="Restore default settings">Reset</button>
+                        <button id="powerOff" title="Power off the esp-scope">Power off</button>
                     </div>
                     <div class="hint" id="devInfo"></div>
                 </div>
@@ -510,18 +510,18 @@
     <!-- Wifi Modal -->
     <div id="wifiModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">Configurar Wi‑Fi</div>
+            <div class="modal-header">Configure Wi‑Fi</div>
             <div class="form-group">
                 <label>SSID</label>
-                <input type="text" id="wifiSsid" placeholder="Nombre de la red">
+                <input type="text" id="wifiSsid" placeholder="Network name">
             </div>
             <div class="form-group">
-                <label>Contraseña</label>
-                <input type="password" id="wifiPass" placeholder="Contraseña">
+                <label>Password</label>
+                <input type="password" id="wifiPass" placeholder="Password">
             </div>
             <div class="modal-actions">
-                <button id="closeWifi">Cancelar</button>
-                <button id="saveWifi" class="primary">Guardar</button>
+                <button id="closeWifi">Cancel</button>
+                <button id="saveWifi" class="primary">Save</button>
             </div>
         </div>
     </div>
